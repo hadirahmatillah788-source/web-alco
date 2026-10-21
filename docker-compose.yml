@@ -1,0 +1,25 @@
+name: alco_web
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: papan-rapat-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: papan_rapat_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - papan_rapat_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d papan_rapat_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  papan_rapat_pgdata:
+    name: alco_web_papan_rapat_pgdata
+    external: true
