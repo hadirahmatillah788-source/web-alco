@@ -26,6 +26,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
+ENV NEXTAUTH_SECRET="alco-super-secret-key-production-2026-jwt"
+ENV NEXTAUTH_URL="https://web-alco-production.up.railway.app"
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next

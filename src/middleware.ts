@@ -4,6 +4,7 @@ export default withAuth({
   pages: {
     signIn: "/login",
   },
+  secret: process.env.NEXTAUTH_SECRET || "alco-super-secret-key-production-2026-jwt",
 });
 
 export const config = {

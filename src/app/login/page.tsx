@@ -28,11 +28,11 @@ function LoginForm() {
 
   // Jika sudah login, alihkan ke dashboard ALCO atau callbackUrl
   useEffect(() => {
-    if (status === "authenticated") {
+    if (status === "authenticated" && !reason) {
       const callbackUrl = searchParams.get("callbackUrl") || "/alco";
-      window.location.href = callbackUrl;
+      router.replace(callbackUrl);
     }
-  }, [status, searchParams]);
+  }, [status, router, searchParams, reason]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

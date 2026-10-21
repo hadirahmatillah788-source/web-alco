@@ -4,7 +4,22 @@ import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { Role } from "@prisma/client";
 
+const isProduction = process.env.NODE_ENV === "production";
+const useSecureCookies = isProduction && !process.env.NEXTAUTH_URL?.startsWith("http://localhost");
+
 export const authOptions: NextAuthOptions = {
+  useSecureCookies,
+  cookies: {
+    sessionToken: {
+      name: `${useSecureCookies ? "__Secure-" : ""}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: useSecureCookies,
+      },
+    },
+  },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -69,5 +84,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "alco-super-secret-key-production-2026-jwt",
 };
