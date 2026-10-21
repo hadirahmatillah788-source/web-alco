@@ -171,6 +171,31 @@ export default function HomePage() {
     setIsFormModalOpen(true);
   };
 
+  const handleDeleteRapat = async (rapat: any) => {
+    if (
+      !confirm(
+        `Apakah Anda yakin ingin MENGHAPUS keputusan rapat ini secara permanen?\n\n"${rapat.judul}"\n\nTindakan ini tidak dapat dibatalkan.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/pengumuman/${rapat.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        fetchPengumuman();
+      } else {
+        const json = await res.json();
+        alert(json.error || "Gagal menghapus keputusan rapat");
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus keputusan rapat");
+    }
+  };
+
   const handleCreateNew = () => {
     setFormInitialData(null);
     setIsFormModalOpen(true);
@@ -422,6 +447,7 @@ export default function HomePage() {
                     isMaker={isAdmin}
                     onEdit={handleEditRapat}
                     onToggleAktif={handleToggleAktif}
+                    onDelete={handleDeleteRapat}
                     onOpenDrive={handleOpenDriveDoc}
                   />
                 ))}
@@ -584,6 +610,7 @@ export default function HomePage() {
                     isMaker={isAdmin}
                     onEdit={handleEditRapat}
                     onToggleAktif={handleToggleAktif}
+                    onDelete={handleDeleteRapat}
                     onOpenDrive={handleOpenDriveDoc}
                   />
                 ))}

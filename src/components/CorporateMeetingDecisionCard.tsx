@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import {
   Edit2,
+  Trash2,
   ChevronDown,
   ChevronUp,
   FileText,
@@ -43,6 +44,7 @@ interface CorporateMeetingDecisionCardProps {
   isMaker?: boolean;
   onEdit?: (rapat: RapatItem) => void;
   onToggleAktif?: (rapat: RapatItem) => void;
+  onDelete?: (rapat: RapatItem) => void;
   onOpenDrive?: (lampiran: LampiranItem) => void;
 }
 
@@ -52,6 +54,7 @@ export function CorporateMeetingDecisionCard({
   isMaker: isMakerProp,
   onEdit,
   onToggleAktif,
+  onDelete,
   onOpenDrive,
 }: CorporateMeetingDecisionCardProps) {
   const { data: session } = useSession();
@@ -140,12 +143,13 @@ export function CorporateMeetingDecisionCard({
           </h3>
         </div>
 
-        {/* Action Buttons (Edit & Status Toggle) */}
+        {/* Action Buttons (Edit, Status Toggle, & Hapus) */}
         {isMaker && (
           <div className="flex items-center gap-2 shrink-0 self-start md:self-center">
             <button
               onClick={() => onEdit && onEdit(rapat)}
               className="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              title="Edit Keputusan Rapat"
             >
               <Edit2 className="w-3.5 h-3.5 text-slate-500" />
               <span>Edit</span>
@@ -154,8 +158,18 @@ export function CorporateMeetingDecisionCard({
             <button
               onClick={() => onToggleAktif && onToggleAktif(rapat)}
               className="bg-[#143265] hover:bg-[#0f244a] text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-2xs transition-colors cursor-pointer"
+              title="Ubah Status Aktif / Arsip"
             >
               Status Toggle
+            </button>
+
+            <button
+              onClick={() => onDelete && onDelete(rapat)}
+              className="bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-900 text-xs font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              title="Hapus Keputusan Rapat (Khusus Maker)"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+              <span>Hapus</span>
             </button>
           </div>
         )}

@@ -180,6 +180,36 @@ export function ModalFormRapat({ isOpen, onClose, onSuccess, initialData }: Moda
     }
   };
 
+  const handleDelete = async () => {
+    if (!initialData?.id) return;
+    if (
+      !confirm(
+        `Apakah Anda yakin ingin MENGHAPUS keputusan rapat ini secara permanen?\n\n"${initialData.judul}"\n\nTindakan ini tidak dapat dibatalkan.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const res = await fetch(`/api/pengumuman/${initialData.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        onSuccess();
+        onClose();
+      } else {
+        const json = await res.json();
+        alert(json.error || "Gagal menghapus keputusan rapat");
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus keputusan rapat");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-xs p-3 md:p-6 overflow-y-auto">
       <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[92vh] flex flex-col">
@@ -498,29 +528,45 @@ export function ModalFormRapat({ isOpen, onClose, onSuccess, initialData }: Moda
           </div>
 
           {/* Footer Submit Buttons */}
-          <div className="pt-2 border-t border-slate-200 flex items-center justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5 disabled:opacity-50"
-            >
-              {isSubmitting ? (
-                "Menyimpan..."
-              ) : (
-                <>
-                  <Check className="w-4 h-4" />
-                  {initialData?.id ? "Simpan Perubahan Risalah" : "Terbitkan Risalah Rapat"}
-                </>
-              )}
-            </button>
+          <div className="pt-2 border-t border-slate-200 flex items-center justify-between gap-3">
+            {initialData?.id ? (
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={isSubmitting}
+                className="px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:text-rose-800 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                <span>Hapus Keputusan</span>
+              </button>
+            ) : (
+              <div />
+            )}
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isSubmitting}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+              >
+                {isSubmitting ? (
+                  "Menyimpan..."
+                ) : (
+                  <>
+                    <Check className="w-4 h-4" />
+                    {initialData?.id ? "Simpan Perubahan Risalah" : "Terbitkan Risalah Rapat"}
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>
