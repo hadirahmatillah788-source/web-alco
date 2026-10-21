@@ -35,5 +35,5 @@ COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 3000
 
-# Automatically sync Prisma database tables on startup, then start Next.js
-CMD ["sh", "-c", "npx prisma db push && npm run start"]
+# Automatically sync Prisma database tables and seed admin user on startup, then start Next.js
+CMD ["sh", "-c", "npx prisma db push && npx tsx prisma/seed.ts && npm run start"]
