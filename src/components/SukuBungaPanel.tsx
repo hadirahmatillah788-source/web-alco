@@ -23,12 +23,14 @@ import {
   HelpCircle,
   ChevronsUpDown,
   SlidersHorizontal,
+  FileText,
 } from "lucide-react";
 
 interface ProdukBungaItem {
   id: string;
   nama: string;
   rate: string;
+  nomorKeputusan?: string | null;
   tenorTiering?: string | null;
   saldoMinimal?: string | null;
   keterangan?: string | null;
@@ -84,6 +86,7 @@ export function SukuBungaPanel() {
   const [targetKategoriNama, setTargetKategoriNama] = useState<string>("");
   const [editingProduk, setEditingProduk] = useState<ProdukBungaItem | null>(null);
   const [produkNama, setProdukNama] = useState("");
+  const [produkNomorKeputusan, setProdukNomorKeputusan] = useState("");
   const [produkRate, setProdukRate] = useState("");
   const [produkTenor, setProdukTenor] = useState("");
   const [produkSaldoMin, setProdukSaldoMin] = useState("");
@@ -266,6 +269,7 @@ export function SukuBungaPanel() {
     setTargetKategoriNama(kategori.nama);
     setEditingProduk(null);
     setProdukNama("");
+    setProdukNomorKeputusan("");
     setProdukRate(activeJenis === "SYARIAH" ? "Nisbah 45 : 55 (Eq. 5.10%)" : "5.00% p.a.");
     setProdukTenor("");
     setProdukSaldoMin("");
@@ -283,6 +287,7 @@ export function SukuBungaPanel() {
     setTargetKategoriNama(kategori.nama);
     setEditingProduk(produk);
     setProdukNama(produk.nama);
+    setProdukNomorKeputusan(produk.nomorKeputusan || "");
     setProdukRate(produk.rate);
     setProdukTenor(produk.tenorTiering || "");
     setProdukSaldoMin(produk.saldoMinimal || "");
@@ -308,6 +313,7 @@ export function SukuBungaPanel() {
           body: JSON.stringify({
             nama: produkNama.trim(),
             rate: produkRate.trim(),
+            nomorKeputusan: produkNomorKeputusan.trim() || null,
             tenorTiering: produkTenor.trim() || null,
             saldoMinimal: produkSaldoMin.trim() || null,
             keterangan: produkKeterangan.trim() || null,
@@ -324,6 +330,7 @@ export function SukuBungaPanel() {
             kategoriId: targetKategoriId,
             nama: produkNama.trim(),
             rate: produkRate.trim(),
+            nomorKeputusan: produkNomorKeputusan.trim() || null,
             tenorTiering: produkTenor.trim() || null,
             saldoMinimal: produkSaldoMin.trim() || null,
             keterangan: produkKeterangan.trim() || null,
@@ -558,7 +565,8 @@ export function SukuBungaPanel() {
                 const matchNama = p.nama.toLowerCase().includes(q);
                 const matchRate = p.rate.toLowerCase().includes(q);
                 const matchTenor = p.tenorTiering?.toLowerCase().includes(q) || false;
-                return matchNama || matchRate || matchTenor;
+                const matchNoKep = p.nomorKeputusan?.toLowerCase().includes(q) || false;
+                return matchNama || matchRate || matchTenor || matchNoKep;
               }
               return true;
             });
@@ -669,6 +677,7 @@ export function SukuBungaPanel() {
                             <tr className="bg-slate-900 text-white text-xs uppercase tracking-wider font-semibold">
                               <th className="py-3 px-4 w-12 text-center">No</th>
                               <th className="py-3 px-4">Nama Produk</th>
+                              <th className="py-3 px-4">Nomor Keputusan</th>
                               <th className="py-3 px-4">Tenor / Tiering Saldo</th>
                               <th className="py-3 px-4">
                                 {activeJenis === "KONVENSIONAL" ? "Suku Bunga (% p.a.)" : "Nisbah / Bagi Hasil (Eq.)"}
@@ -698,6 +707,17 @@ export function SukuBungaPanel() {
                                     <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.2 rounded-md bg-amber-100 text-amber-800 border border-amber-300">
                                       Non-Aktif (Arsip)
                                     </span>
+                                  )}
+                                </td>
+
+                                <td className="py-3.5 px-4 font-medium text-slate-600">
+                                  {p.nomorKeputusan ? (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200/80 font-semibold text-[#1E3A8A]">
+                                      <FileText className="w-3 h-3 text-[#1E3A8A]" />
+                                      {p.nomorKeputusan}
+                                    </span>
+                                  ) : (
+                                    <span className="text-slate-400 italic">-</span>
                                   )}
                                 </td>
 
@@ -905,6 +925,19 @@ export function SukuBungaPanel() {
                   value={produkNama}
                   onChange={(e) => setProdukNama(e.target.value)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                  Nomor Keputusan ALCO / SK
+                </label>
+                <input
+                  type="text"
+                  placeholder="Contoh: ALCO/BA/2026/XII/020 atau SK No. 014/ALCO/X/2026"
+                  value={produkNomorKeputusan}
+                  onChange={(e) => setProdukNomorKeputusan(e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
               </div>
 

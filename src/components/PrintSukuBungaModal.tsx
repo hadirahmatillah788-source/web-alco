@@ -8,6 +8,7 @@ interface ProdukBungaItem {
   id: string;
   nama: string;
   rate: string;
+  nomorKeputusan?: string | null;
   tenorTiering?: string | null;
   saldoMinimal?: string | null;
   keterangan?: string | null;
@@ -298,10 +299,11 @@ export function PrintSukuBungaModal({ isOpen, onClose, groups }: PrintSukuBungaM
                             <tr className="bg-slate-50 text-slate-800 font-bold border-b border-slate-300">
                               <th className="py-1 px-2 w-8 text-center border-r border-slate-300">No</th>
                               <th className="py-1 px-2.5 border-r border-slate-300">Nama Produk</th>
+                              <th className="py-1 px-2.5 border-r border-slate-300 w-36">No. Keputusan</th>
                               <th className="py-1 px-2.5 text-right border-r border-slate-300 w-36 whitespace-nowrap">
                                 Suku Bunga / Nisbah
                               </th>
-                              <th className="py-1 px-2.5 border-r border-slate-300 w-44">
+                              <th className="py-1 px-2.5 border-r border-slate-300 w-36">
                                 Jangka Waktu / Tenor
                               </th>
                               <th className="py-1 px-2.5">Keterangan</th>
@@ -318,6 +320,9 @@ export function PrintSukuBungaModal({ isOpen, onClose, groups }: PrintSukuBungaM
                                 </td>
                                 <td className="py-1.5 px-2.5 font-bold text-slate-900 border-r border-slate-200">
                                   {prod.nama}
+                                </td>
+                                <td className="py-1.5 px-2.5 font-mono text-slate-700 text-[10px] border-r border-slate-200">
+                                  {prod.nomorKeputusan || "-"}
                                 </td>
                                 <td className="py-1.5 px-2.5 text-right font-black text-[#143265] text-xs whitespace-nowrap border-r border-slate-200">
                                   {prod.rate}

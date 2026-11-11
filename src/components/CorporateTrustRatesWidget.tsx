@@ -17,6 +17,7 @@ import {
   Clock,
   Sparkles,
   Printer,
+  FileText,
 } from "lucide-react";
 import { PrintSukuBungaModal } from "@/components/PrintSukuBungaModal";
 
@@ -24,6 +25,7 @@ interface ProdukBungaItem {
   id: string;
   nama: string;
   rate: string;
+  nomorKeputusan?: string | null;
   tenorTiering?: string | null;
   saldoMinimal?: string | null;
   keterangan?: string | null;
@@ -76,6 +78,7 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
 
   // Form states for Product
   const [productName, setProductName] = useState("");
+  const [productNomorKeputusan, setProductNomorKeputusan] = useState("");
   const [productRate, setProductRate] = useState("");
   const [productTenor, setProductTenor] = useState("");
   const [productKeterangan, setProductKeterangan] = useState("");
@@ -138,6 +141,7 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
     if (!activeCategory) return;
     setEditingProduct(null);
     setProductName("");
+    setProductNomorKeputusan("");
     setProductRate("");
     setProductTenor("");
     setProductKeterangan("");
@@ -148,6 +152,7 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
   const handleOpenEditProduct = (prod: ProdukBungaItem) => {
     setEditingProduct(prod);
     setProductName(prod.nama);
+    setProductNomorKeputusan(prod.nomorKeputusan || "");
     setProductRate(prod.rate);
     setProductTenor(prod.tenorTiering || "");
     setProductKeterangan(prod.keterangan || "");
@@ -189,6 +194,7 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
           kategoriId: activeCategory.id,
           nama: productName.trim(),
           rate: productRate.trim(),
+          nomorKeputusan: productNomorKeputusan.trim() || null,
           tenorTiering: productTenor.trim() || null,
           keterangan: productKeterangan.trim() || null,
         }),
@@ -379,13 +385,14 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
                 )}
               </div>
 
-              {/* TABEL SUKU BUNGA KORPORAT: Nama Produk | Jangka Waktu | Suku Bunga | Keterangan */}
+              {/* TABEL SUKU BUNGA KORPORAT: Nama Produk | Nomor Keputusan | Jangka Waktu | Suku Bunga | Keterangan */}
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
                     <tr className="bg-slate-100/90 text-slate-700 font-bold border-b border-slate-200">
                       <th className="py-3 px-4 w-12 text-center text-[11px]">No.</th>
                       <th className="py-3 px-4 text-[11px]">Nama Produk</th>
+                      <th className="py-3 px-4 text-[11px]">Nomor Keputusan</th>
                       <th className="py-3 px-4 text-[11px]">Jangka Waktu</th>
                       <th className="py-3 px-4 text-[11px]">Suku Bunga</th>
                       <th className="py-3 px-4 text-[11px]">Keterangan</th>
@@ -418,7 +425,19 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
                             )}
                           </td>
 
-                          {/* 2. Jangka Waktu (Tenor / Tiering) */}
+                          {/* 2. Nomor Keputusan */}
+                          <td className="py-3 px-4 text-slate-700 font-medium">
+                            {prod.nomorKeputusan ? (
+                              <span className="inline-flex items-center gap-1 bg-blue-50/80 border border-blue-200/80 px-2 py-0.5 rounded-md text-[11px] font-semibold text-[#143265]">
+                                <FileText className="w-3 h-3 text-[#143265]" />
+                                {prod.nomorKeputusan}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400 italic">-</span>
+                            )}
+                          </td>
+
+                          {/* 3. Jangka Waktu (Tenor / Tiering) */}
                           <td className="py-3 px-4 text-slate-700 font-medium">
                             {prod.tenorTiering ? (
                               <span className="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-md text-[11px] text-slate-700">
@@ -430,14 +449,14 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
                             )}
                           </td>
 
-                          {/* 3. Suku Bunga (Rate) */}
+                          {/* 4. Suku Bunga (Rate) */}
                           <td className="py-3 px-4">
                             <span className="font-extrabold text-[#143265] text-xs sm:text-sm bg-blue-50/70 border border-blue-200/60 px-2 py-0.5 rounded-md inline-block">
                               {prod.rate}
                             </span>
                           </td>
 
-                          {/* 4. Keterangan */}
+                          {/* 5. Keterangan */}
                           <td className="py-3 px-4 text-slate-600 leading-relaxed text-[11px]">
                             {prod.keterangan || <span className="text-slate-400 italic">-</span>}
                           </td>
@@ -470,7 +489,7 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
                     ) : (
                       <tr>
                         <td
-                          colSpan={isMaker ? 6 : 5}
+                          colSpan={isMaker ? 7 : 6}
                           className="py-10 text-center text-xs text-slate-400 italic"
                         >
                           Belum ada produk suku bunga terdaftar pada kategori {activeCategory.nama}.
@@ -586,7 +605,7 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
             <form onSubmit={handleSaveProduct} className="p-5 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  1. Nama Produk
+                  1. Nama Produk *
                 </label>
                 <input
                   type="text"
@@ -598,10 +617,23 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
                 />
               </div>
 
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  2. Nomor Keputusan Rapat / SK ALCO
+                </label>
+                <input
+                  type="text"
+                  placeholder="Misal: ALCO/BA/2026/XII/020 atau SK No. 014/ALCO/X/2026..."
+                  value={productNomorKeputusan}
+                  onChange={(e) => setProductNomorKeputusan(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#143265] focus:outline-none"
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    2. Jangka Waktu
+                    3. Jangka Waktu
                   </label>
                   <input
                     type="text"
@@ -614,7 +646,7 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    3. Suku Bunga
+                    4. Suku Bunga *
                   </label>
                   <input
                     type="text"
@@ -629,7 +661,7 @@ export function CorporateTrustRatesWidget({ onRefreshNeeded }: CorporateTrustRat
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  4. Keterangan
+                  5. Keterangan
                 </label>
                 <textarea
                   rows={2}

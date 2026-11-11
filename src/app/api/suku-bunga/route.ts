@@ -62,6 +62,7 @@ export async function GET(request: NextRequest) {
           id: p.id,
           nama: p.nama,
           rate: p.rate,
+          nomorKeputusan: p.nomorKeputusan,
           tenorTiering: p.tenorTiering,
           saldoMinimal: p.saldoMinimal,
           keterangan: p.keterangan,

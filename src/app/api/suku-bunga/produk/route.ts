@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { kategoriId, nama, rate, tenorTiering, saldoMinimal, keterangan, isActive } = body;
+    const { kategoriId, nama, rate, nomorKeputusan, tenorTiering, saldoMinimal, keterangan, isActive } = body;
 
     if (!kategoriId || !nama?.trim() || !rate?.trim()) {
       return NextResponse.json({ error: "Kategori, nama produk, dan persentase suku bunga/rate wajib diisi" }, { status: 400 });
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
         kategoriId,
         nama: nama.trim(),
         rate: rate.trim(),
+        nomorKeputusan: nomorKeputusan?.trim() || null,
         tenorTiering: tenorTiering?.trim() || null,
         saldoMinimal: saldoMinimal?.trim() || null,
         keterangan: keterangan?.trim() || null,

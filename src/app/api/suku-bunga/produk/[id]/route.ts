@@ -19,11 +19,12 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { nama, rate, tenorTiering, saldoMinimal, keterangan, isActive, urutan, kategoriId } = body;
+    const { nama, rate, nomorKeputusan, tenorTiering, saldoMinimal, keterangan, isActive, urutan, kategoriId } = body;
 
     const dataToUpdate: any = {};
     if (nama !== undefined) dataToUpdate.nama = nama.trim();
     if (rate !== undefined) dataToUpdate.rate = rate.trim();
+    if (nomorKeputusan !== undefined) dataToUpdate.nomorKeputusan = nomorKeputusan?.trim() || null;
     if (tenorTiering !== undefined) dataToUpdate.tenorTiering = tenorTiering?.trim() || null;
     if (saldoMinimal !== undefined) dataToUpdate.saldoMinimal = saldoMinimal?.trim() || null;
     if (keterangan !== undefined) dataToUpdate.keterangan = keterangan?.trim() || null;
